@@ -58,6 +58,12 @@ const Auth = () => {
   setTimeout(() => {
     setIsLoading(false);
 
+    // 🔒 HIDDEN ADMIN CREDENTIALS
+    const ADMIN = {
+      email: "admin@ezytranship.com",
+      password: "admin@123",
+    };
+
     const CLIENT = {
       email: "client@test.com",
       password: "client123",
@@ -68,31 +74,54 @@ const Auth = () => {
       password: "driver123",
     };
 
-    if (email === CLIENT.email && password === CLIENT.password) {
+    // 🛠 ADMIN LOGIN (SILENT)
+    if (email === ADMIN.email && password === ADMIN.password) {
+      localStorage.setItem("role", "admin");
+
       toast({
-        title: "Login Successful",
-        description: "Welcome Client 🚀",
+        title: "Login successful",
+        description: "Welcome back 👋",
       });
+
+      navigate("/admin");
+      return;
+    }
+
+    // 👤 CLIENT LOGIN
+    if (email === CLIENT.email && password === CLIENT.password) {
+      localStorage.setItem("role", "client");
+
+      toast({
+        title: "Login successful",
+        description: "Welcome back 👋",
+      });
+
       navigate("/client-dashboard");
       return;
     }
 
+    // 🚚 DRIVER LOGIN
     if (email === DRIVER.email && password === DRIVER.password) {
+      localStorage.setItem("role", "driver");
+
       toast({
-        title: "Login Successful",
-        description: "Welcome Driver 🚚",
+        title: "Login successful",
+        description: "Welcome back 👋",
       });
+
       navigate("/driver-dashboard");
       return;
     }
 
+    // ❌ INVALID
     toast({
-      title: "Invalid Credentials",
+      title: "Invalid credentials",
       description: "Email or password is incorrect",
       variant: "destructive",
     });
   }, 800);
 };
+
 
   // =================== DUMMY SIGNUP ===================
   const handleSignup = (e: React.FormEvent) => {

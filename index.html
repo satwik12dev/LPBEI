@@ -3,19 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
+
     <title>FleetGo</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
 
-    <!-- TODO: Update og:title to match your application name -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="google" content="notranslate">
+
+
+    <meta name="description" content="FleetGo - Commercial Vehicle Booking Platform" />
+    <meta name="author" content="FleetGo" />
+
+    <!-- Open Graph -->
     <meta property="og:title" content="FleetGo" />
-    <meta property="og:description" content="Lovable Generated Project" />
+    <meta property="og:description" content="Commercial Vehicle Booking Platform" />
 
+    <!-- ✅ GOOGLE TRANSLATE INIT -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,hi",
+            autoDisplay: false
+          },
+          "google_translate_element"
+        );
+      }
+    </script>
+
+    <script
+      type="text/javascript"
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
   </head>
 
   <body>
+    <!-- 🔒 Hidden Google Translator (controlled from Header) -->
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <!-- React Root -->
     <div id="root"></div>
+
+    <!-- Vite Entry -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

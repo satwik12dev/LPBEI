@@ -210,3 +210,32 @@
     opacity: 1;
   }
 }
+
+/* ================= GOOGLE TRANSLATE – HIDE ALL UI ================= */
+
+/* Hide top translate bar */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+/* Prevent page from shifting down */
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Hide Google logo & text */
+.goog-logo-link,
+.goog-te-gadget span {
+  display: none !important;
+}
+
+/* Hide the original dropdown */
+.goog-te-combo {
+  display: none !important;
+}
+
+/* Hide iframe completely */
+iframe.goog-te-banner-frame {
+  display: none !important;
+}
