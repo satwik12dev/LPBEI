@@ -1,8 +1,8 @@
-<h1>🚚 FleetGo / EzyTranship</h1>
+<h1>🚚 EzyTranship</h1>
 <h3>Commercial Vehicle Booking Platform</h3>
 
-<p>
-FleetGo (EzyTranship) is a <strong>full-stack commercial vehicle booking platform</strong>
+<p></p>
+EzyTranship is a <strong>full-stack commercial vehicle booking platform</strong>
 that connects <strong>clients</strong>, <strong>drivers</strong>, and
 <strong>administrators</strong> in a single system.
 The project is built with scalability, clean UI, and real-world architecture in mind.
