@@ -4,21 +4,31 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Layouts
+/* ───────── Layouts ───────── */
 import PublicLayout from "@/layouts/PublicLayout";
 import AuthGuard from "@/layouts/AuthGuard";
 
-// Pages
+/* ───────── Public Pages ───────── */
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Vehicles from "./pages/Vehicles";
 import HowItWorks from "./components/HowItWorks";
 import CTASection from "./components/CTASection";
-import ClientDashboard from "./pages/ClientDashboard";
-import DriverDashboard from "./pages/DriverDashboard";
 import NotFound from "./pages/NotFound";
 
-// Admin
+/* ───────── Client Pages ───────── */
+import ClientDashboard from "./pages/client/ClientDashboard";
+import ClientProfileSetup from "./pages/client/ClientProfileSetup";
+import ClientProfileView from "./pages/client/ClientProfileView";
+import EditClientProfile from "./pages/client/EditClientProfile";
+import DriverList from "./pages/client/DriverList";
+import BookVehicle from "./pages/client/BookVehicle";
+import BookingHistory from "./pages/client/BookingHistory";
+
+/* ───────── Driver ───────── */
+import DriverDashboard from "./pages/DriverDashboard";
+
+/* ───────── Admin ───────── */
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Users from "./pages/admin/Users";
@@ -36,29 +46,35 @@ const App = () => (
       <BrowserRouter>
         <Routes>
 
-          {/* 🌍 PUBLIC (NO LOGIN) */}
+          {/* 🌍 PUBLIC */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Index />} />
+            <Route path="/vehicles" element={<Vehicles />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/contact" element={<CTASection />} />
           </Route>
 
           {/* 🔓 AUTH */}
           <Route path="/auth" element={<Auth />} />
 
-          {/* 🔒 PROTECTED ROUTES */}
+          {/* 🧩 ONBOARDING (NOT GUARDED) */}
+          <Route path="/client/profile-setup" element={<ClientProfileSetup />} />
+
+          {/* 🔒 PROTECTED */}
           <Route element={<AuthGuard />}>
 
-            {/* Public UI after login */}
-            <Route element={<PublicLayout />}>
-              <Route path="/vehicles" element={<Vehicles />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/contact" element={<CTASection />} />
-            </Route>
-
-            {/* Dashboards */}
+            {/* CLIENT */}
             <Route path="/client-dashboard" element={<ClientDashboard />} />
+            <Route path="/client/profile" element={<ClientProfileView />} />
+            <Route path="/client/profile/edit" element={<EditClientProfile />} />
+            <Route path="/client/drivers" element={<DriverList />} />
+            <Route path="/client/book-vehicle" element={<BookVehicle />} />
+            <Route path="/client/bookings" element={<BookingHistory />} />
+
+            {/* DRIVER */}
             <Route path="/driver-dashboard" element={<DriverDashboard />} />
 
-            {/* Admin */}
+            {/* ADMIN */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<Users />} />
@@ -69,7 +85,7 @@ const App = () => (
 
           </Route>
 
-          {/* 404 */}
+          {/* ❌ 404 */}
           <Route path="*" element={<NotFound />} />
 
         </Routes>
