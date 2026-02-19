@@ -1,231 +1,73 @@
-<h1>🚚 EzyTranship</h1>
-<h3>Commercial Vehicle Booking Platform</h3>
+# Welcome to your Lovable project
 
-<p></p>
-EzyTranship is a <strong>full-stack commercial vehicle booking platform</strong>
-that connects <strong>clients</strong>, <strong>drivers</strong>, and
-<strong>administrators</strong> in a single system.
-The project is built with scalability, clean UI, and real-world architecture in mind.
-</p>
+## Project info
 
-<hr />
+**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-<h2>🌟 Features</h2>
+## How can I edit this code?
 
-<h3>👤 Client</h3>
-<ul>
-  <li>Browse available vehicles</li>
-  <li>Book vehicles</li>
-  <li>View booking history</li>
-  <li>Multi-language support (English / Hindi)</li>
-</ul>
+There are several ways of editing your application.
 
-<h3>🚚 Driver</h3>
-<ul>
-  <li>Driver dashboard</li>
-  <li>View assigned bookings</li>
-  <li>Ratings & reviews (dummy data)</li>
-</ul>
+**Use Lovable**
 
-<h3>🛠️ Admin</h3>
-<ul>
-  <li>Admin dashboard</li>
-  <li>View all users (clients & drivers)</li>
-  <li>Manage drivers</li>
-  <li>View bookings</li>
-  <li>View reviews</li>
-  <li>Search & filter data</li>
-</ul>
+Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
 
-<h3>🌐 Global</h3>
-<ul>
-  <li>Full website auto-translation (Google Translate)</li>
-  <li>Responsive UI (Mobile & Desktop)</li>
-  <li>Light & Dark theme</li>
-  <li>Role-based routing</li>
-  <li>Protected routes</li>
-</ul>
+Changes made via Lovable will be committed automatically to this repo.
 
-<hr />
+**Use your preferred IDE**
 
-<h2>🧱 Tech Stack</h2>
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-<h3>Frontend</h3>
-<ul>
-  <li>React + TypeScript</li>
-  <li>Vite</li>
-  <li>Tailwind CSS</li>
-  <li>shadcn/ui</li>
-  <li>React Router DOM</li>
-  <li>Lucide Icons</li>
-  <li>Google Translate (full-site translation)</li>
-</ul>
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-<h3>Backend (Planned)</h3>
-<ul>
-  <li>Node.js</li>
-  <li>Express.js</li>
-  <li>MongoDB</li>
-  <li>JWT Authentication</li>
-  <li>OTP Verification</li>
-</ul>
+Follow these steps:
 
-<hr />
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-<h2>📁 Project Structure</h2>
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-<pre>
-project-root/
-│
-├── public/
-│   └── favicon.svg
-│
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── Header.tsx
-│   │   ├── HowItWorks.tsx
-│   │   ├── CTASection.tsx
-│   │   └── ui/
-│   │
-│   ├── pages/
-│   │   ├── Index.tsx
-│   │   ├── Auth.tsx
-│   │   ├── Vehicles.tsx
-│   │   ├── ClientDashboard.tsx
-│   │   ├── DriverDashboard.tsx
-│   │   ├── NotFound.tsx
-│   │   └── admin/
-│   │       ├── AdminLayout.tsx
-│   │       ├── AdminDashboard.tsx
-│   │       ├── Users.tsx
-│   │       ├── Drivers.tsx
-│   │       ├── Bookings.tsx
-│   │       └── Reviews.tsx
-│   │
-│   ├── hooks/
-│   ├── lib/
-│   ├── index.css
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── vite-env.d.ts
-│
-├── index.html
-├── tailwind.config.ts
-├── package.json
-└── README.md
-</pre>
+# Step 3: Install the necessary dependencies.
+npm i
 
-<hr />
-
-<h2>🔐 Authentication (Dummy Credentials)</h2>
-
-<p><strong>Client</strong></p>
-<pre>
-Email: client@test.com
-Password: client123
-</pre>
-
-<p><strong>Driver</strong></p>
-<pre>
-Email: driver@test.com
-Password: driver123
-</pre>
-
-<p><strong>Admin</strong></p>
-<pre>
-Email: admin@test.com
-Password: admin123
-</pre>
-
-<p>
-Authentication is currently frontend-based for demo purposes.
-Backend authentication using OTP and JWT is planned.
-</p>
-
-<hr />
-
-<h2>🛣️ Routing Overview</h2>
-
-<pre>
-/                    → Landing Page
-/auth                → Login / Signup
-/vehicles            → Vehicle Listing
-/how-it-works        → How It Works
-/contact             → Contact / CTA
-
-/client-dashboard    → Client Dashboard
-/driver-dashboard    → Driver Dashboard
-
-/admin               → Admin Panel
-/admin/users
-/admin/drivers
-/admin/bookings
-/admin/reviews
-</pre>
-
-<hr />
-
-<h2>🌍 Multi-Language Support</h2>
-
-<ul>
-  <li>Full website translation using Google Translate</li>
-  <li>English & Hindi supported</li>
-  <li>Custom language switch in header</li>
-  <li>Chrome auto-translate bar disabled</li>
-</ul>
-
-<pre>
-&lt;meta name="google" content="notranslate" /&gt;
-</pre>
-
-<hr />
-
-<h2>🚀 Getting Started</h2>
-
-<pre>
-git clone https://github.com/your-username/fleetgo.git
-cd fleetgo
-npm install
+# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
-</pre>
+```
 
-<p>
-Application runs at:
-</p>
+**Edit a file directly in GitHub**
 
-<pre>
-http://localhost:8080
-</pre>
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-<hr />
+**Use GitHub Codespaces**
 
-<h2>🔮 Future Enhancements</h2>
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-<ul>
-  <li>MongoDB backend integration</li>
-  <li>OTP-based authentication</li>
-  <li>JWT role-based security</li>
-  <li>Real-time booking tracking</li>
-  <li>Payment gateway integration</li>
-  <li>Push notifications</li>
-  <li>Native i18n (without Google Translate)</li>
-</ul>
+## What technologies are used for this project?
 
-<hr />
+This project is built with:
 
-<h2>👨‍💻 Author</h2>
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
 
-<p>
-<strong>Satwik</strong><br />
-Engineering Student | Full-Stack Developer
-</p>
+## How can I deploy this project?
 
-<hr />
+Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
-<h2>📜 License</h2>
+## Can I connect a custom domain to my Lovable project?
 
-<p>
-This project is created for <strong>educational and demo purposes</strong>.
-You are free to modify and extend it.
-</p>
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
