@@ -40,11 +40,15 @@ export default function ClientProfilePage() {
     e.preventDefault()
     if (!validate()) return
     setSaving(true)
-    await new Promise(r => setTimeout(r, 600))
-    updateProfile({ ...form, age: Number(form.age) })
-    toast.success('Profile saved! Welcome aboard.', 'Profile Complete')
-    setSaving(false)
-    navigate('/client')
+    try {
+      await updateProfile({ ...form, age: Number(form.age) })
+      toast.success('Profile saved! Welcome aboard.', 'Profile Complete')
+      navigate('/client')
+    } catch (err) {
+      toast.error(err.message || 'Failed to save profile.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (

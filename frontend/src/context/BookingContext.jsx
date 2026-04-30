@@ -1,62 +1,100 @@
-import { createContext, useContext, useState, useCallback } from 'react'
-import { mockBookings, mockRequests } from '../data/mockData'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { bookings as bookingsApi } from '../api/client'
+import { normalizeBooking } from '../api/normalize'
+import { useAuth } from './AuthContext'
 
 const BookingContext = createContext(null)
 
 export function BookingProvider({ children }) {
-  const [bookings, setBookings] = useState(mockBookings)
-  const [requests, setRequests] = useState(mockRequests)
+  const { user } = useAuth()
+  const [bookings, setBookings] = useState([])
+  const [stats, setStats] = useState({ total: 0, completed: 0, upcoming: 0, cancelled: 0, pending: 0, totalEarnings: 0 })
+  const [loadingBookings, setLoadingBookings] = useState(false)
 
-  const addBooking = useCallback((booking) => {
-    const newBooking = {
-      ...booking,
-      id: `b_${Date.now()}`,
-      status: 'upcoming',
-      createdAt: new Date().toISOString(),
+  // ── Fetch bookings when user changes ──────────────────────────────────────
+  const fetchBookings = useCallback(async () => {
+    if (!user) { setBookings([]); return }
+    setLoadingBookings(true)
+    try {
+      const data = await bookingsApi.list({ limit: 100 })
+      const normalized = (data.bookings || []).map(normalizeBooking)
+      setBookings(normalized)
+    } catch (err) {
+      console.error('Failed to fetch bookings:', err)
+    } finally {
+      setLoadingBookings(false)
     }
-    setBookings(prev => [newBooking, ...prev])
-    // Also create a request for the driver
-    const newRequest = {
-      id: `r_${Date.now()}`,
-      bookingId: newBooking.id,
-      clientName: booking.clientName,
-      clientPhone: booking.clientPhone || '+91 9876543210',
-      route: booking.route,
-      date: booking.date,
-      time: booking.time,
-      tripType: booking.tripType,
-      driverId: booking.driverId,
-      status: 'pending',
-      fare: booking.fare,
-      createdAt: new Date().toISOString(),
-    }
-    setRequests(prev => [newRequest, ...prev])
-    return newBooking
-  }, [])
+  }, [user])
 
-  const cancelBooking = useCallback((id) => {
+  const fetchStats = useCallback(async () => {
+    if (!user) return
+    try {
+      const data = await bookingsApi.stats()
+      setStats(data)
+    } catch (err) {
+      console.error('Failed to fetch stats:', err)
+    }
+  }, [user])
+
+  useEffect(() => {
+    fetchBookings()
+    fetchStats()
+  }, [fetchBookings, fetchStats])
+
+  // ── Create Booking ────────────────────────────────────────────────────────
+  const addBooking = useCallback(async (bookingData) => {
+    const created = await bookingsApi.create(bookingData)
+    const normalized = normalizeBooking(created)
+    setBookings(prev => [normalized, ...prev])
+    // Refresh stats
+    fetchStats()
+    return normalized
+  }, [fetchStats])
+
+  // ── Cancel Booking ────────────────────────────────────────────────────────
+  const cancelBooking = useCallback(async (id, reason = '') => {
+    await bookingsApi.cancel(id, reason)
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'cancelled' } : b))
-  }, [])
+    fetchStats()
+  }, [fetchStats])
 
-  const acceptRequest = useCallback((id) => {
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'accepted' } : r))
-    setBookings(prev => prev.map(b => b.id === requests.find(r => r.id === id)?.bookingId ? { ...b, status: 'confirmed' } : b))
-  }, [requests])
+  // ── Accept Request (driver) ───────────────────────────────────────────────
+  const acceptRequest = useCallback(async (id) => {
+    await bookingsApi.accept(id)
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'confirmed', driverStatus: 'accepted' } : b))
+    fetchStats()
+  }, [fetchStats])
 
-  const rejectRequest = useCallback((id) => {
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'rejected' } : r))
-  }, [])
+  // ── Reject Request (driver) ───────────────────────────────────────────────
+  const rejectRequest = useCallback(async (id, reason = '') => {
+    await bookingsApi.reject(id, reason)
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'rejected', driverStatus: 'rejected' } : b))
+    fetchStats()
+  }, [fetchStats])
 
-  const getClientBookings = useCallback((clientId) => {
-    return bookings.filter(b => b.clientId === clientId)
+  // ── Complete Booking (driver) ─────────────────────────────────────────────
+  const completeBooking = useCallback(async (id) => {
+    await bookingsApi.complete(id)
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'completed' } : b))
+    fetchStats()
+  }, [fetchStats])
+
+  // ── Derived data helpers (bookings are already scoped by API) ─────────────
+  const getClientBookings = useCallback(() => {
+    return bookings
   }, [bookings])
 
-  const getDriverRequests = useCallback((driverId) => {
-    return requests.filter(r => r.driverId === driverId)
-  }, [requests])
+  const getDriverRequests = useCallback(() => {
+    return bookings
+  }, [bookings])
 
   return (
-    <BookingContext.Provider value={{ bookings, requests, addBooking, cancelBooking, acceptRequest, rejectRequest, getClientBookings, getDriverRequests }}>
+    <BookingContext.Provider value={{
+      bookings, stats, loadingBookings,
+      addBooking, cancelBooking, acceptRequest, rejectRequest, completeBooking,
+      getClientBookings, getDriverRequests,
+      fetchBookings, fetchStats,
+    }}>
       {children}
     </BookingContext.Provider>
   )

@@ -34,25 +34,23 @@ export default function BookingModal({ driver, route, open, onClose }) {
 
   const handleConfirm = async () => {
     setLoading(true)
-    await new Promise(r => setTimeout(r, 800))
-    addBooking({
-      clientId: user.id,
-      clientName: user.profile?.name || user.username,
-      clientPhone: user.profile?.phone,
-      driverId: driver.id,
-      driverName: driver.name,
-      vehicleType: driver.vehicleType,
-      route,
-      date: form.date,
-      time: form.time,
-      tripType: form.tripType,
-      fare: Math.round(returnFare),
-    })
-    setLoading(false)
-    toast.success(`Booking confirmed with ${driver.name}!`, 'Booking Successful')
-    onClose()
-    setStep(1)
-    setForm({ date: '', time: '', tripType: 'one-way' })
+    try {
+      await addBooking({
+        driverId: driver.id,
+        route,
+        date: form.date,
+        time: form.time,
+        tripType: form.tripType,
+      })
+      toast.success(`Booking confirmed with ${driver.name}!`, 'Booking Successful')
+      onClose()
+      setStep(1)
+      setForm({ date: '', time: '', tripType: 'one-way' })
+    } catch (err) {
+      toast.error(err.message || 'Failed to create booking.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleClose = () => {

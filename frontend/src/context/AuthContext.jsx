@@ -1,13 +1,8 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
+import { auth as authApi, users as usersApi } from '../api/client'
+import { normalizeUser } from '../api/normalize'
 
 const AuthContext = createContext(null)
-
-const MOCK_USERS = [
-  { id: 'c1', email: 'client@demo.com', password: 'demo123', role: 'client', username: 'Arjun Sharma', profileComplete: true,
-    profile: { name: 'Arjun Sharma', age: 28, workType: 'E-Commerce', phone: '+91 9876543210', city: 'Delhi' } },
-  { id: 'd1', email: 'driver@demo.com', password: 'demo123', role: 'driver', username: 'Ramesh Kumar', profileComplete: true,
-    profile: { name: 'Ramesh Kumar', age: 35, phone: '+91 9123456789', vehicleType: 'Truck', vehicleNumber: 'DL01AB1234', licenseNumber: 'DL-2010-0098765', loadCapacity: '5 Ton', routes: ['Delhi → Moradabad', 'Delhi → Noida'], fare: { 'Delhi → Moradabad': 1900, 'Delhi → Noida': 800 }, isLive: true } },
-]
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -17,58 +12,80 @@ export function AuthProvider({ children }) {
     } catch { return null }
   })
   const [loading, setLoading] = useState(false)
+  const initializing = useRef(true)
 
+  // ── Restore session on mount ──────────────────────────────────────────────
+  useEffect(() => {
+    const token = localStorage.getItem('ezy_token')
+    if (!token) { initializing.current = false; return }
+
+    authApi.me()
+      .then((data) => {
+        const normalized = normalizeUser(data)
+        setUser(normalized)
+        localStorage.setItem('ezy_user', JSON.stringify(normalized))
+      })
+      .catch(() => {
+        // Token expired or invalid — clear everything
+        localStorage.removeItem('ezy_token')
+        localStorage.removeItem('ezy_user')
+        setUser(null)
+      })
+      .finally(() => { initializing.current = false })
+  }, [])
+
+  // ── Login ─────────────────────────────────────────────────────────────────
   const login = useCallback(async (email, password) => {
     setLoading(true)
-    await new Promise(r => setTimeout(r, 800))
-    const found = MOCK_USERS.find(u => u.email === email && u.password === password)
-    if (!found) {
+    try {
+      const data = await authApi.login(email, password)
+      localStorage.setItem('ezy_token', data.token)
+      const normalized = normalizeUser(data.user)
+      setUser(normalized)
+      localStorage.setItem('ezy_user', JSON.stringify(normalized))
+      return normalized
+    } finally {
       setLoading(false)
-      throw new Error('Invalid email or password')
     }
-    const { password: _, ...safeUser } = found
-    setUser(safeUser)
-    localStorage.setItem('ezy_user', JSON.stringify(safeUser))
-    setLoading(false)
-    return safeUser
   }, [])
 
+  // ── Signup ────────────────────────────────────────────────────────────────
   const signup = useCallback(async (email, password, username, role) => {
     setLoading(true)
-    await new Promise(r => setTimeout(r, 900))
-    const exists = MOCK_USERS.find(u => u.email === email)
-    if (exists) {
+    try {
+      const data = await authApi.signup(username, email, password, role)
+      localStorage.setItem('ezy_token', data.token)
+      const normalized = normalizeUser(data.user)
+      setUser(normalized)
+      localStorage.setItem('ezy_user', JSON.stringify(normalized))
+      return normalized
+    } finally {
       setLoading(false)
-      throw new Error('Email already registered')
     }
-    const newUser = {
-      id: `u_${Date.now()}`,
-      email,
-      username,
-      role,
-      profileComplete: false,
-      profile: {},
-    }
-    MOCK_USERS.push({ ...newUser, password })
-    setUser(newUser)
-    localStorage.setItem('ezy_user', JSON.stringify(newUser))
-    setLoading(false)
-    return newUser
   }, [])
 
-  const logout = useCallback(() => {
-    setUser(null)
+  // ── Logout ────────────────────────────────────────────────────────────────
+  const logout = useCallback(async () => {
+    await authApi.logout().catch(() => {})
+    localStorage.removeItem('ezy_token')
     localStorage.removeItem('ezy_user')
+    setUser(null)
   }, [])
 
-  const updateProfile = useCallback((profileData) => {
-    setUser(prev => {
-      const updated = { ...prev, profile: { ...prev.profile, ...profileData }, profileComplete: true }
-      localStorage.setItem('ezy_user', JSON.stringify(updated))
-      return updated
-    })
+  // ── Update Profile (calls backend) ────────────────────────────────────────
+  const updateProfile = useCallback(async (profileData) => {
+    try {
+      const updatedUser = await usersApi.updateMyProfile(profileData)
+      const normalized = normalizeUser(updatedUser)
+      setUser(normalized)
+      localStorage.setItem('ezy_user', JSON.stringify(normalized))
+      return normalized
+    } catch (err) {
+      throw err
+    }
   }, [])
 
+  // ── Local-only field update (for UI state like toggling) ──────────────────
   const updateUserField = useCallback((field, value) => {
     setUser(prev => {
       const updated = { ...prev, [field]: value }
